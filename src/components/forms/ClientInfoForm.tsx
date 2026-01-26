@@ -27,12 +27,13 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function ClientInfoForm() {
-  const { clientInfo, invoiceNumber, invoiceDate, validUntil, setInvoiceNumber, setInvoiceDate, setValidUntil, updateClientInfo, setStep } = useInvoiceStore();
+  const { clientInfo, invoiceNumber, quotationNumber, invoiceDate, validUntil, setInvoiceNumber, setQuotationNumber, setInvoiceDate, setValidUntil, updateClientInfo, setStep } = useInvoiceStore();
 
   const form = useForm<ClientInfoWithInvoiceInput>({
     resolver: zodResolver(clientInfoWithInvoiceSchema),
     defaultValues: {
       invoiceNumber: invoiceNumber || '',
+      quotationNumber: quotationNumber || '',
       quotationDate: invoiceDate ? new Date(invoiceDate) : undefined,
       validUntil: validUntil ? new Date(validUntil) : undefined,
       ...(clientInfo || {
@@ -47,9 +48,10 @@ export function ClientInfoForm() {
   });
 
   const onSubmit = (data: ClientInfoWithInvoiceInput) => {
-    const { invoiceNumber: invNo, quotationDate, validUntil: until, ...client } = data;
+    const { invoiceNumber: invNo, quotationNumber: quoNo, quotationDate, validUntil: until, ...client } = data;
     updateClientInfo(client);
     setInvoiceNumber(invNo);
+    if(quoNo) setQuotationNumber(quoNo);
     setInvoiceDate(format(quotationDate, 'yyyy-MM-dd'));
     setValidUntil(format(until, 'yyyy-MM-dd'));
     setStep(2); // Move to Service Details
@@ -83,6 +85,21 @@ export function ClientInfoForm() {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="quotationNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quotation No. (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Q-2026-001" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}

@@ -12,6 +12,7 @@ export const clientInfoSchema = z.object({
 // Invoice metadata grouped separately, used together with client info in Step 1
 export const invoiceMetaSchema = z.object({
   invoiceNumber: z.string().min(1, 'Invoice number is required'),
+  quotationNumber: z.string().optional(),
   quotationDate: z.date({
     message: "Quotation date is required",
   }),
@@ -53,6 +54,7 @@ export const termsSchema = z.object({
 
 export const invoiceSchema = z.object({
   invoiceNumber: z.string().min(1, 'Invoice number is required'),
+  quotationNumber: z.string().optional(),
   date: z.string(),
   clientInfo: clientInfoSchema,
   serviceDetails: serviceDetailsSchema,

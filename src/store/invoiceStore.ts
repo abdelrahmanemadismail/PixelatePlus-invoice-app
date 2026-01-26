@@ -19,6 +19,7 @@ interface InvoiceStore {
   terms: TermsConditions | null;
   errors: ValidationErrors;
   invoiceNumber: string;
+  quotationNumber: string;
   invoiceDate: string;
   validUntil: string;
 
@@ -38,6 +39,7 @@ interface InvoiceStore {
   reset: () => void;
   generateInvoiceNumber: () => void;
   setInvoiceNumber: (value: string) => void;
+  setQuotationNumber: (value: string) => void;
   setInvoiceDate: (value: string) => void;
   setValidUntil: (value: string) => void;
 }
@@ -83,6 +85,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
       },
       errors: {},
       invoiceNumber: '',
+      quotationNumber: '',
       invoiceDate: new Date().toISOString().split('T')[0],
       validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         .toISOString()
@@ -245,6 +248,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
         set({ invoiceNumber: `${prefix}-${timestamp}-${random}` });
       },
       setInvoiceNumber: (value) => set({ invoiceNumber: value }),
+      setQuotationNumber: (value) => set({ quotationNumber: value }),
       setInvoiceDate: (value) => set({ invoiceDate: value }),
       setValidUntil: (value) => set({ validUntil: value }),
     }),

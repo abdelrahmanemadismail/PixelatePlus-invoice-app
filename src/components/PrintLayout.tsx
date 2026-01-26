@@ -11,6 +11,7 @@ interface PrintLayoutProps {
   serviceDetails: ServiceDetails;
   terms: TermsConditions;
   invoiceNumber: string;
+  quotationNumber?: string;
   invoiceDate: string;
   validUntil: string;
   onEditSection?: (step: number) => void;
@@ -22,6 +23,7 @@ export function PrintLayout({
   serviceDetails,
   terms,
   invoiceNumber,
+  quotationNumber,
   invoiceDate,
   validUntil,
   onEditSection,
@@ -84,6 +86,14 @@ export function PrintLayout({
                   {documentType === 'invoice' ? 'Invoice #' : 'Ref #'}
                 </span>
                 <span className="font-bold font-mono text-slate-900 text-xs">{invoiceNumber}</span>
+              {quotationNumber && (
+                <div className="flex justify-between gap-8 text-[9px] items-center">
+                  <span className="text-slate-400 font-medium uppercase tracking-wider">
+                    Quotation #
+                  </span>
+                  <span className="font-bold font-mono text-slate-900 text-xs">{quotationNumber}</span>
+                </div>
+              )}
               </div>
               <div className="h-px bg-slate-100 my-1"></div>
               <div className="flex justify-between gap-8 text-[9px]">
