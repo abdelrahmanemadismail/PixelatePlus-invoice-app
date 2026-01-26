@@ -131,10 +131,6 @@
     size: A4;
   }
 
-  @page :first {
-    margin: 0;
-  }
-
   /* CRITICAL: Hide everything by default */
   body {
     visibility: hidden;
