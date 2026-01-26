@@ -10,17 +10,21 @@ export const clientInfoSchema = z.object({
     .regex(trnPattern, 'TRN must be 15 digits')
     .min(15, 'TRN must be 15 digits')
     .max(15, 'TRN must be 15 digits'),
-  contactPerson: z.string().min(2, 'Contact person name is required'),
-  email: z.string().email('Invalid email address'),
-  phone: z.string().min(8, 'Phone number must be at least 8 characters'),
-  billingAddress: z.string().min(10, 'Billing address must be at least 10 characters'),
+  contactPerson: z.string().optional(),
+  email: z.union([z.email(), z.literal('')]).optional(),
+  phone: z.string().optional(),
+  billingAddress: z.string().optional(),
 });
 
 // Invoice metadata grouped separately, used together with client info in Step 1
 export const invoiceMetaSchema = z.object({
   invoiceNumber: z.string().min(1, 'Invoice number is required'),
-  quotationDate: z.string().min(1, 'Quotation date is required'),
-  validUntil: z.string().min(1, 'Valid until date is required'),
+  quotationDate: z.date({
+    message: "Quotation date is required",
+  }),
+  validUntil: z.date({
+    message: "Valid until date is required",
+  }),
 });
 
 export const clientInfoWithInvoiceSchema = clientInfoSchema.merge(invoiceMetaSchema);

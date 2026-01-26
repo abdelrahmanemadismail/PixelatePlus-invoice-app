@@ -2,9 +2,19 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 import { clientInfoWithInvoiceSchema, type ClientInfoWithInvoiceInput } from '@/lib/validation';
 import { useInvoiceStore } from '@/store/invoiceStore';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import {
   Form,
   FormControl,
@@ -23,8 +33,8 @@ export function ClientInfoForm() {
     resolver: zodResolver(clientInfoWithInvoiceSchema),
     defaultValues: {
       invoiceNumber: invoiceNumber || '',
-      quotationDate: invoiceDate || '',
-      validUntil: validUntil || '',
+      quotationDate: invoiceDate ? new Date(invoiceDate) : undefined,
+      validUntil: validUntil ? new Date(validUntil) : undefined,
       ...(clientInfo || {
       companyName: '',
       trnNumber: '',
@@ -40,8 +50,8 @@ export function ClientInfoForm() {
     const { invoiceNumber: invNo, quotationDate, validUntil: until, ...client } = data;
     updateClientInfo(client);
     setInvoiceNumber(invNo);
-    setInvoiceDate(quotationDate);
-    setValidUntil(until);
+    setInvoiceDate(format(quotationDate, 'yyyy-MM-dd'));
+    setValidUntil(format(until, 'yyyy-MM-dd'));
     setStep(2); // Move to Service Details
   };
 
@@ -78,11 +88,39 @@ export function ClientInfoForm() {
                   control={form.control}
                   name="quotationDate"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel>Quotation Date *</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "dd/MM/yyyy")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) =>
+                              date < new Date("1900-01-01")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -91,11 +129,39 @@ export function ClientInfoForm() {
                   control={form.control}
                   name="validUntil"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel>Valid Until *</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "dd/MM/yyyy")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) =>
+                              date < new Date("1900-01-01")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -140,7 +206,7 @@ export function ClientInfoForm() {
                 name="contactPerson"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Contact Person *</FormLabel>
+                    <FormLabel>Contact Person</FormLabel>
                     <FormControl>
                       <Input placeholder="John Doe" {...field} />
                     </FormControl>
@@ -154,7 +220,7 @@ export function ClientInfoForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email *</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -173,7 +239,7 @@ export function ClientInfoForm() {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone *</FormLabel>
+                  <FormLabel>Phone</FormLabel>
                   <FormControl>
                     <Input placeholder="+971 50 123 4567" {...field} />
                   </FormControl>
@@ -187,7 +253,7 @@ export function ClientInfoForm() {
               name="billingAddress"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Billing Address *</FormLabel>
+                  <FormLabel>Billing Address</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="123 Business Bay, Dubai, UAE"
