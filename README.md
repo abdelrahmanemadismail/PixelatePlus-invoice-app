@@ -1,36 +1,179 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Invoice Generator - Pixelate Plus
 
-## Getting Started
+A professional invoice management and generation system for **Pixelate Plus**, designed to streamline the creation of brand-consistent, print-ready A4 invoices for event production services.
 
-First, run the development server:
+## 🚀 Features
+
+- **Multi-Step Workflow:** Intuitive 4-step process (Client Info → Service Details → Terms → Preview)
+- **Dynamic Line Items:** Flexible item manager with support for nested sub-descriptions (perfect for booth specifications, lighting details, etc.)
+- **Real-Time Calculations:** Automatic subtotal, VAT (5% UAE standard), and net total calculations
+- **Print-Optimized:** CSS print media queries ensure pixel-perfect A4 output via browser print dialog
+- **State Persistence:** Form data saved to sessionStorage via Zustand persist middleware
+- **Type-Safe:** Full TypeScript implementation with Zod validation schemas
+
+## 📋 Tech Stack
+
+- **Framework:** Next.js 16 (App Router) with React 19
+- **Styling:** Tailwind CSS v4 with shadcn/ui components
+- **State Management:** Zustand with persist middleware
+- **Form Validation:** React Hook Form + Zod schemas
+- **Type Safety:** TypeScript strict mode
+
+## 🛠️ Getting Started
+
+### Prerequisites
+
+- Node.js 20+ and npm
+- Modern browser (Chrome, Firefox, or Edge recommended for print testing)
+
+### Installation
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Development Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev      # Start development server (Turbopack)
+npm run build    # Production build
+npm start        # Run production build
+npm run lint     # Run ESLint
+```
 
-## Learn More
+## 📖 Usage
 
-To learn more about Next.js, take a look at the following resources:
+### Creating an Invoice
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Client Information**
+   - Enter company name, TRN number (15 digits), contact details, and billing address
+   - All fields validated in real-time
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Service Details**
+   - Add line items with descriptions, sub-descriptions, unit price, and quantity
+   - Totals calculate automatically as you add/edit items
+   - Example line item structure:
+     ```
+     Description: Booth Construction
+     Sub-descriptions:
+       - Raised Platform (3m x 3m)
+       - Lightbox Signage
+       - Acrylic Finish
+     Unit Price: 15,000 AED
+     Quantity: 1
+     ```
 
-## Deploy on Vercel
+3. **Terms & Conditions**
+   - Select payment terms (Net 15/30/45 or Due on Receipt)
+   - Enter bank details (account number, IBAN, Swift code)
+   - Add optional notes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. **Preview & Print**
+   - Review complete invoice with all details
+   - Click "Print Invoice" or press `Ctrl+P` (Windows) / `Cmd+P` (Mac)
+   - Save as PDF via browser print dialog
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Print Testing
+
+The invoice is optimized for A4 paper (210mm × 297mm) with proper margins. To test:
+
+1. Generate a preview invoice
+2. Press `Ctrl+P` (Windows) or `Cmd+P` (Mac)
+3. Select "Save as PDF" as destination
+4. Verify:
+   - No browser headers/footers appear
+   - Content fits within A4 dimensions
+   - All colors print correctly
+   - Page breaks don't split line items
+
+## 🗂️ Project Structure
+
+```
+src/
+├── app/
+│   ├── globals.css          # Global styles + print CSS
+│   ├── layout.tsx            # Root layout with metadata
+│   └── page.tsx              # Main invoice generator page
+├── components/
+│   ├── forms/
+│   │   ├── ClientInfoForm.tsx      # Step 1: Client details
+│   │   ├── ServiceDetailsForm.tsx  # Step 2: Line items
+│   │   └── TermsForm.tsx           # Step 3: Payment terms
+│   ├── ui/                          # shadcn/ui components
+│   ├── InvoicePreview.tsx          # Step 4: Preview wrapper
+│   ├── LineItemManager.tsx         # Line item CRUD with dialog
+│   ├── PrintLayout.tsx             # Print-optimized invoice layout
+│   └── Stepper.tsx                 # Progress indicator
+├── lib/
+│   ├── utils.ts              # Utility functions (cn helper)
+│   └── validation.ts         # Zod schemas for forms
+├── store/
+│   └── invoiceStore.ts       # Zustand state management
+└── types/
+    └── invoice.ts            # TypeScript interfaces
+```
+
+## 🎨 Customization
+
+### Branding
+
+Update company details in [PrintLayout.tsx](src/components/PrintLayout.tsx):
+
+```tsx
+<h1 className="text-4xl font-bold text-gray-900 mb-2">PIXELATE PLUS</h1>
+<p className="text-gray-600 text-sm">Creative Event Solutions</p>
+```
+
+### VAT Rate
+
+Modify `VAT_PERCENTAGE` in [invoiceStore.ts](src/store/invoiceStore.ts):
+
+```typescript
+const VAT_PERCENTAGE = 5; // UAE standard (change as needed)
+```
+
+### Payment Terms
+
+Add/remove options in [TermsForm.tsx](src/components/forms/TermsForm.tsx):
+
+```typescript
+const PAYMENT_TERMS_OPTIONS = [
+  { value: 'net-15', label: 'Net 15 Days' },
+  // Add custom terms here
+];
+```
+
+## 🐛 Troubleshooting
+
+### Print Preview Issues
+
+**Problem:** Browser headers/footers appear in print
+**Solution:** Ensure `@media print { @page { margin: 15mm 10mm; } }` in globals.css
+
+**Problem:** Colors don't print correctly
+**Solution:** Verify `-webkit-print-color-adjust: exact` is applied
+
+### Form Validation
+
+**Problem:** TRN validation fails
+**Solution:** UAE TRN must be exactly 15 digits (pattern: `/^\d{15}$/`)
+
+### State Persistence
+
+**Problem:** Form data lost on page refresh
+**Solution:** Check browser settings allow sessionStorage; ensure Zustand persist middleware is configured
+
+## 📝 License
+
+Private project for Pixelate Plus internal use.
+
+## 🤝 Contributing
+
+This is a private project. For questions or feature requests, contact the development team.
+

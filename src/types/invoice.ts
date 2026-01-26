@@ -1,0 +1,48 @@
+export interface ClientInfo {
+  companyName: string;
+  trnNumber: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  billingAddress: string;
+}
+
+export interface LineItem {
+  id: string;
+  description: string;
+  subDescriptions: string[];
+  unitPrice: number;
+  quantity: number;
+  total: number;
+}
+
+export interface ServiceDetails {
+  lineItems: LineItem[];
+  subtotal: number;
+  vatAmount: number;
+  vatPercentage: number; // UAE standard: 5
+  netTotal: number;
+}
+
+export interface TermsConditions {
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+  iban: string;
+  swiftCode?: string;
+  additionalNotes?: string;
+}
+
+export interface InvoiceData {
+  invoiceNumber: string;
+  date: string;
+  clientInfo: ClientInfo | null;
+  serviceDetails: ServiceDetails | null;
+  terms: TermsConditions | null;
+}
+
+export type InvoiceStep = 0 | 1 | 2 | 3;
+
+export interface ValidationErrors {
+  [key: string]: string[];
+}
