@@ -159,6 +159,7 @@
     min-height: 297mm; /* Force A4 height */
     margin: 0;
     background: white;
+    display: block !important; /* Disable flex to allow proper pagination */
   }
 
   /* Hide specific non-print elements explicitly (double safety) */
@@ -175,12 +176,14 @@
   body {
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Prevent scrollbars printing */
+    overflow: visible; /* Restore overflow for scrolling/printing */
   }
 
   /* Optimize element breaking */
   .line-item,
-  tr {
+  tr,
+  td,
+  th {
     page-break-inside: avoid;
     break-inside: avoid;
   }
@@ -190,11 +193,41 @@
     break-after: avoid;
   }
 
+  /* Table Fixes for Print */
+  table {
+    width: 100%;
+    border-collapse: collapse; /* Ensure clean borders */
+  }
+
   thead {
-    display: table-header-group;
+    display: table-header-group; /* Repeats header on new pages */
   }
 
   tfoot {
     display: table-footer-group;
+  }
+
+  /* Fix for ghost containers/borders on page breaks */
+  .table-container {
+    border: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Since we removed the container border, let's add side borders to the table rows to maintain the look */
+  .table-container table tbody tr {
+    border-left: 1px solid #e2e8f0; /* slate-200 */
+    border-right: 1px solid #e2e8f0;
+  }
+
+  /* Ensure the header has side borders too */
+  .table-container table thead tr {
+    border-left: 1px solid #0f172a; /* slate-900 to match header bg */
+    border-right: 1px solid #0f172a;
+  }
+
+  /* Add bottom border to the last row since container is gone */
+  .table-container table tbody tr:last-child {
+    border-bottom: 1px solid #e2e8f0;
   }
 }

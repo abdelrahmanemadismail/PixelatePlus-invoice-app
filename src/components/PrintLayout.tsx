@@ -163,7 +163,7 @@ export function PrintLayout({
           )}
         </div>
 
-        <div className="rounded-lg border border-slate-200 overflow-hidden">
+        <div className="rounded-lg border border-slate-200 overflow-hidden table-container">
           <table className="w-full text-[10px] box-border">
             <thead>
               <tr className="bg-slate-900 text-slate-50 border-b border-slate-900">
