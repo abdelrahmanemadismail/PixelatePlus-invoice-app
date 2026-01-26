@@ -51,7 +51,7 @@ export function ClientInfoForm() {
     const { invoiceNumber: invNo, quotationNumber: quoNo, quotationDate, validUntil: until, ...client } = data;
     updateClientInfo(client);
     setInvoiceNumber(invNo);
-    if(quoNo) setQuotationNumber(quoNo);
+    setQuotationNumber(quoNo || '');
     setInvoiceDate(format(quotationDate, 'yyyy-MM-dd'));
     setValidUntil(format(until, 'yyyy-MM-dd'));
     setStep(2); // Move to Service Details

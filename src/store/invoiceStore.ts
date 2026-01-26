@@ -238,6 +238,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
           },
           errors: {},
           invoiceNumber: '',
+          quotationNumber: '',
           invoiceDate: new Date().toISOString().split('T')[0],
         }),
 
