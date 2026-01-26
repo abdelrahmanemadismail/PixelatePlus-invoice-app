@@ -129,6 +129,9 @@
   /* Set A4 page size and margins */
   @page {
     size: A4;
+  }
+
+  @page :first {
     margin: 0;
   }
 
