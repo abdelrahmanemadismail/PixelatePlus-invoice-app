@@ -26,7 +26,8 @@ export function PrintLayout({
   validUntil,
   onEditSection,
 }: PrintLayoutProps) {
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number | undefined) => {
+    if (amount === undefined) return '';
     return new Intl.NumberFormat('en-AE', {
       style: 'currency',
       currency: 'AED',
@@ -194,7 +195,7 @@ export function PrintLayout({
                     {item.quantity}
                   </td>
                   <td className="py-1.5 px-4 text-right font-bold text-slate-900 align-top whitespace-nowrap">
-                    {formatCurrency(item.total)}
+                    {item.total > 0 && formatCurrency(item.total)}
                   </td>
                 </tr>
               ))}

@@ -46,7 +46,8 @@ const VAT_PERCENTAGE = 0; // VAT Disabled as per request
 
 const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-const calculateLineItemTotal = (unitPrice: number, quantity: number): number => {
+const calculateLineItemTotal = (unitPrice: number | undefined, quantity: number): number => {
+  if (unitPrice === undefined) return 0;
   return Math.round(unitPrice * quantity * 100) / 100;
 };
 

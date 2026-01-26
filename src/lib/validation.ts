@@ -26,7 +26,7 @@ export const lineItemSchema = z.object({
   id: z.string(),
   description: z.string().min(3, 'Description must be at least 3 characters'),
   subDescriptions: z.array(z.string()),
-  unitPrice: z.number().min(0, 'Unit price must be non-negative'),
+  unitPrice: z.number().min(0, 'Unit price must be non-negative').optional(),
   quantity: z.number().min(1, 'Quantity must be at least 1'),
   total: z.number(),
 });

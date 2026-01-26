@@ -11,7 +11,7 @@ export interface LineItem {
   id: string;
   description: string;
   subDescriptions: string[];
-  unitPrice: number;
+  unitPrice?: number;
   quantity: number;
   total: number;
 }

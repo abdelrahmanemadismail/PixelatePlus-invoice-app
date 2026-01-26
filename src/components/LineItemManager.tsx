@@ -47,7 +47,7 @@ export function LineItemManager() {
   };
 
   const handleAdd = () => {
-    if (!formData.description || !formData.unitPrice) return;
+    if (!formData.description) return;
 
     const subDescArray = formData.subDescriptions
       .split('\n')
@@ -57,7 +57,7 @@ export function LineItemManager() {
     addLineItem({
       description: formData.description,
       subDescriptions: subDescArray,
-      unitPrice: parseFloat(formData.unitPrice),
+      unitPrice: formData.unitPrice ? parseFloat(formData.unitPrice) : undefined,
       quantity: parseInt(formData.quantity) || 1,
     });
 
@@ -70,14 +70,14 @@ export function LineItemManager() {
     setFormData({
       description: item.description,
       subDescriptions: item.subDescriptions.join('\n'),
-      unitPrice: item.unitPrice.toString(),
+      unitPrice: item.unitPrice !== undefined ? item.unitPrice.toString() : '',
       quantity: item.quantity.toString(),
     });
     setIsDialogOpen(true);
   };
 
   const handleUpdate = () => {
-    if (!editingItem || !formData.description || !formData.unitPrice) return;
+    if (!editingItem || !formData.description) return;
 
     const subDescArray = formData.subDescriptions
       .split('\n')
@@ -87,7 +87,7 @@ export function LineItemManager() {
     updateLineItem(editingItem.id, {
       description: formData.description,
       subDescriptions: subDescArray,
-      unitPrice: parseFloat(formData.unitPrice),
+      unitPrice: formData.unitPrice ? parseFloat(formData.unitPrice) : undefined,
       quantity: parseInt(formData.quantity) || 1,
     });
 
@@ -108,7 +108,8 @@ export function LineItemManager() {
     }
   };
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number | undefined) => {
+    if (amount === undefined) return '';
     return new Intl.NumberFormat('en-AE', {
       style: 'currency',
       currency: 'AED',
@@ -163,7 +164,7 @@ export function LineItemManager() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="unitPrice">Unit Price (AED) *</Label>
+                  <Label htmlFor="unitPrice">Unit Price (AED)</Label>
                   <Input
                     id="unitPrice"
                     type="number"
@@ -201,7 +202,7 @@ export function LineItemManager() {
               </Button>
               <Button
                 onClick={editingItem ? handleUpdate : handleAdd}
-                disabled={!formData.description || !formData.unitPrice}
+                disabled={!formData.description}
               >
                 {editingItem ? 'Update' : 'Add'} Item
               </Button>
