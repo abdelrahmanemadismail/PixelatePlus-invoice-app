@@ -62,10 +62,10 @@ export function PrintLayout({
                 <Mail className="w-3 h-3 text-slate-400" />
                 <p>info@pixelateuae.com</p>
               </div>
-            <div className="flex gap-2 items-center">
+            {/* <div className="flex gap-2 items-center">
                <div className="w-3 flex justify-center text-slate-400 font-bold text-[9px]">TRN: </div>
                <p className="text-slate-700 font-semibold">100574155100003</p>
-            </div>
+            </div> */}
             </div>
             <div className="flex gap-2">
               <MapPin className="w-3 h-3 text-slate-400 mt-0.5 shrink-0" />
