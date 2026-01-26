@@ -39,9 +39,12 @@ export interface InvoiceData {
   clientInfo: ClientInfo | null;
   serviceDetails: ServiceDetails | null;
   terms: TermsConditions | null;
+  documentType: DocumentType;
 }
 
-export type InvoiceStep = 0 | 1 | 2 | 3;
+export type DocumentType = 'invoice' | 'inquiry';
+
+export type InvoiceStep = 0 | 1 | 2 | 3 | 4;
 
 export interface ValidationErrors {
   [key: string]: string[];

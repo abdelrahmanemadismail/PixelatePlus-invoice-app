@@ -7,10 +7,12 @@ import type {
   InvoiceStep,
   ValidationErrors,
   LineItem,
+  DocumentType,
 } from '@/types/invoice';
 
 interface InvoiceStore {
   // State
+  documentType: DocumentType;
   currentStep: InvoiceStep;
   clientInfo: ClientInfo | null;
   serviceDetails: ServiceDetails | null;
@@ -21,6 +23,7 @@ interface InvoiceStore {
   validUntil: string;
 
   // Actions
+  setDocumentType: (type: DocumentType) => void;
   setStep: (step: InvoiceStep) => void;
   updateClientInfo: (data: Partial<ClientInfo>) => void;
   updateServiceDetails: (data: Partial<ServiceDetails>) => void;
@@ -50,6 +53,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
   persist(
     (set, get) => ({
       // Initial state
+      documentType: 'invoice',
       currentStep: 0,
       clientInfo: null,
       serviceDetails: {
@@ -82,6 +86,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
         .split('T')[0],
 
       // Actions
+      setDocumentType: (type) => set({ documentType: type }),
       setStep: (step) => set({ currentStep: step }),
 
       updateClientInfo: (data) =>
@@ -188,6 +193,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
 
       reset: () =>
         set({
+          documentType: 'invoice',
           currentStep: 0,
           clientInfo: null,
           serviceDetails: {

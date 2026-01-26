@@ -13,11 +13,11 @@ export function ServiceDetailsForm() {
       alert('Please add at least one line item before continuing.');
       return;
     }
-    setStep(2); // Move to Terms
+    setStep(3); // Move to Terms
   };
 
   const handleBack = () => {
-    setStep(0); // Go back to Client Info
+    setStep(1); // Go back to Client Info
   };
 
   return (

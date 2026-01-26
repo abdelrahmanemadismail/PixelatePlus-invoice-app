@@ -36,11 +36,11 @@ export function TermsForm() {
 
   const onSubmit = (data: TermsInput) => {
     updateTerms(data);
-    setStep(3); // Move to Preview
+    setStep(4); // Move to Preview
   };
 
   const handleBack = () => {
-    setStep(1); // Go back to Service Details
+    setStep(2); // Go back to Service Details
   };
 
   return (

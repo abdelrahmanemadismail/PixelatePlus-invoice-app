@@ -42,7 +42,7 @@ export function ClientInfoForm() {
     setInvoiceNumber(invNo);
     setInvoiceDate(quotationDate);
     setValidUntil(until);
-    setStep(1); // Move to Service Details
+    setStep(2); // Move to Service Details
   };
 
 

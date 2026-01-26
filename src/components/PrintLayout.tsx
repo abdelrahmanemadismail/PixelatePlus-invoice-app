@@ -3,9 +3,10 @@
 
 import { Button } from '@/components/ui/button';
 import { Edit, MapPin, Phone, Mail, CreditCard, FileText } from 'lucide-react';
-import type { ClientInfo, ServiceDetails, TermsConditions } from '@/types/invoice';
+import type { ClientInfo, ServiceDetails, TermsConditions, DocumentType } from '@/types/invoice';
 
 interface PrintLayoutProps {
+  documentType?: DocumentType;
   clientInfo: ClientInfo;
   serviceDetails: ServiceDetails;
   terms: TermsConditions;
@@ -16,6 +17,7 @@ interface PrintLayoutProps {
 }
 
 export function PrintLayout({
+  documentType = 'invoice',
   clientInfo,
   serviceDetails,
   terms,
@@ -75,11 +77,15 @@ export function PrintLayout({
           </div>
         </div>
         <div className="text-right">
-          <h2 className="text-[48px] font-black text-slate-200/80 tracking-tighter leading-[0.8] mb-4 select-none mr-2">INVOICE</h2>
+          <h2 className="text-[48px] font-black text-slate-200/80 tracking-tighter leading-[0.8] mb-4 select-none mr-2">
+            {documentType === 'invoice' ? 'INVOICE' : 'INQUIRY'}
+          </h2>
           <div className="inline-block text-left bg-white shadow-sm px-4 py-2.5 rounded-xl border border-slate-200 min-w-50">
             <div className="space-y-1.5">
               <div className="flex justify-between gap-8 text-[9px] items-center">
-                <span className="text-slate-400 font-medium uppercase tracking-wider">Invoice #</span>
+                <span className="text-slate-400 font-medium uppercase tracking-wider">
+                  {documentType === 'invoice' ? 'Invoice #' : 'Ref #'}
+                </span>
                 <span className="font-bold font-mono text-slate-900 text-xs">{invoiceNumber}</span>
               </div>
               <div className="h-px bg-slate-100 my-1"></div>
@@ -88,7 +94,9 @@ export function PrintLayout({
                 <span className="font-semibold text-slate-700">{formatDate(invoiceDate)}</span>
               </div>
               <div className="flex justify-between gap-8 text-[9px]">
-                <span className="text-slate-400 font-medium">Due Date</span>
+                <span className="text-slate-400 font-medium">
+                  {documentType === 'invoice' ? 'Due Date' : 'Valid Until'}
+                </span>
                 <span className="font-semibold text-slate-700">{formatDate(validUntil)}</span>
               </div>
             </div>
@@ -104,7 +112,7 @@ export function PrintLayout({
                 variant="ghost"
                 size="icon"
                 className="absolute top-2 right-2 no-print opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6"
-                onClick={() => onEditSection(0)}
+                onClick={() => onEditSection(1)}
               >
                 <Edit className="w-3 h-3 text-slate-400" />
               </Button>
@@ -150,7 +158,7 @@ export function PrintLayout({
               variant="ghost"
               size="sm"
               className="no-print h-5 text-[10px] ml-auto"
-              onClick={() => onEditSection(1)}
+              onClick={() => onEditSection(2)}
             >
               <Edit className="w-2.5 h-2.5 mr-1" />
               Edit Items
@@ -281,7 +289,7 @@ export function PrintLayout({
                 </div>
                 {onEditSection && (
                     <div className="no-print pt-2">
-                        <Button variant="ghost" size="sm" onClick={() => onEditSection(2)} className="h-6 text-xs text-slate-400">
+                        <Button variant="ghost" size="sm" onClick={() => onEditSection(3)} className="h-6 text-xs text-slate-400">
                             <Edit className="w-3 h-3 mr-1" /> Edit Bottom Section
                         </Button>
                     </div>

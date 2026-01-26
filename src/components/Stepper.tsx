@@ -3,10 +3,11 @@ import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const STEPS = [
-  { id: 0, label: 'Client Info' },
-  { id: 1, label: 'Service Details' },
-  { id: 2, label: 'Terms & Conditions' },
-  { id: 3, label: 'Preview' },
+  { id: 0, label: 'Type' },
+  { id: 1, label: 'Client Info' },
+  { id: 2, label: 'Service Details' },
+  { id: 3, label: 'Terms & Conditions' },
+  { id: 4, label: 'Preview' },
 ];
 
 interface StepperProps {
