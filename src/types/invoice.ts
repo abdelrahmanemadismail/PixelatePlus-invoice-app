@@ -19,6 +19,7 @@ export interface LineItem {
 export interface ServiceDetails {
   lineItems: LineItem[];
   subtotal: number;
+  discount: number;
   vatAmount: number;
   vatPercentage: number; // UAE standard: 5
   netTotal: number;

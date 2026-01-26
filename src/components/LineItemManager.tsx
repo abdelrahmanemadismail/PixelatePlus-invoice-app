@@ -26,7 +26,7 @@ import {
 import type { LineItem } from '@/types/invoice';
 
 export function LineItemManager() {
-  const { serviceDetails, addLineItem, removeLineItem, updateLineItem } = useInvoiceStore();
+  const { serviceDetails, addLineItem, removeLineItem, updateLineItem, setDiscount } = useInvoiceStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<LineItem | null>(null);
   const [formData, setFormData] = useState({
@@ -282,12 +282,26 @@ export function LineItemManager() {
                 {formatCurrency(serviceDetails.subtotal)}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span>VAT (5%):</span>
-              <span className="font-medium">
-                {formatCurrency(serviceDetails.vatAmount)}
-              </span>
+            <div className="flex justify-between items-center">
+              <span>Discount:</span>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                className="w-24 h-8 text-right"
+                value={serviceDetails.discount || ''}
+                onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
+              />
             </div>
+            {(serviceDetails.vatAmount > 0) && (
+              <div className="flex justify-between">
+                <span>VAT ({serviceDetails.vatPercentage}%):</span>
+                <span className="font-medium">
+                  {formatCurrency(serviceDetails.vatAmount)}
+                </span>
+              </div>
+            )}
             <div className="flex justify-between text-base font-bold pt-2 border-t">
               <span>Net Total:</span>
               <span>{formatCurrency(serviceDetails.netTotal)}</span>

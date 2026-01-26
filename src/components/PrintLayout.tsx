@@ -62,10 +62,6 @@ export function PrintLayout({
                 <Mail className="w-3 h-3 text-slate-400" />
                 <p>info@pixelateuae.com</p>
               </div>
-            {/* <div className="flex gap-2 items-center">
-               <div className="w-3 flex justify-center text-slate-400 font-bold text-[9px]">TRN: </div>
-               <p className="text-slate-700 font-semibold">100574155100003</p>
-            </div> */}
             </div>
             <div className="flex gap-2">
               <MapPin className="w-3 h-3 text-slate-400 mt-0.5 shrink-0" />
@@ -256,10 +252,18 @@ export function PrintLayout({
                     <span className="text-slate-500 font-medium">Subtotal</span>
                     <span className="font-bold text-slate-700 text-sm">{formatCurrency(serviceDetails.subtotal)}</span>
                     </div>
-                    <div className="flex justify-between text-[10px] items-center">
-                    <span className="text-slate-500 font-medium">VAT (5%)</span>
-                    <span className="font-bold text-slate-700 text-sm">{formatCurrency(serviceDetails.vatAmount)}</span>
-                    </div>
+                    {serviceDetails.discount > 0 && (
+                      <div className="flex justify-between text-[10px] items-center text-red-600">
+                        <span className="font-medium">Discount</span>
+                        <span className="font-bold text-sm">-{formatCurrency(serviceDetails.discount)}</span>
+                      </div>
+                    )}
+                    {serviceDetails.vatAmount > 0 && (
+                      <div className="flex justify-between text-[10px] items-center">
+                        <span className="text-slate-500 font-medium">VAT ({serviceDetails.vatPercentage}%)</span>
+                        <span className="font-bold text-slate-700 text-sm">{formatCurrency(serviceDetails.vatAmount)}</span>
+                      </div>
+                    )}
                     <div className="my-2 border-t-2 border-slate-200 border-dashed"></div>
                     <div className="flex justify-between items-end">
                     <span className="text-[10px] font-bold text-slate-900 uppercase tracking-tight mb-1">Total Payable</span>

@@ -36,6 +36,7 @@ export const serviceDetailsSchema = z.object({
     .array(lineItemSchema)
     .min(1, 'At least one line item is required'),
   subtotal: z.number(),
+  discount: z.number().optional(),
   vatAmount: z.number(),
   vatPercentage: z.number(),
   netTotal: z.number(),

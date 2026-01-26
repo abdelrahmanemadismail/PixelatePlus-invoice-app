@@ -31,6 +31,7 @@ interface InvoiceStore {
   addLineItem: (item: Omit<LineItem, 'id' | 'total'>) => void;
   removeLineItem: (id: string) => void;
   updateLineItem: (id: string, data: Partial<Omit<LineItem, 'id'>>) => void;
+  setDiscount: (amount: number) => void;
   calculateTotals: () => void;
   setErrors: (errors: ValidationErrors) => void;
   clearErrors: () => void;
@@ -41,7 +42,7 @@ interface InvoiceStore {
   setValidUntil: (value: string) => void;
 }
 
-const VAT_PERCENTAGE = 5; // UAE standard
+const VAT_PERCENTAGE = 0; // VAT Disabled as per request
 
 const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -59,6 +60,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
       serviceDetails: {
         lineItems: [],
         subtotal: 0,
+        discount: 0,
         vatAmount: 0,
         vatPercentage: VAT_PERCENTAGE,
         netTotal: 0,
@@ -171,13 +173,15 @@ export const useInvoiceStore = create<InvoiceStore>()(
           (sum, item) => sum + item.total,
           0
         );
-        const vatAmount = Math.round(subtotal * (VAT_PERCENTAGE / 100) * 100) / 100;
-        const netTotal = Math.round((subtotal + vatAmount) * 100) / 100;
+        const discount = serviceDetails.discount || 0;
+        const taxableAmount = Math.max(0, subtotal - discount);
+        const vatAmount = Math.round(taxableAmount * (VAT_PERCENTAGE / 100) * 100) / 100;
+        const netTotal = Math.round((taxableAmount + vatAmount) * 100) / 100;
 
         set({
-                validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-                  .toISOString()
-                  .split('T')[0],
+                // validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                //   .toISOString()
+                //   .split('T')[0],
           serviceDetails: {
             ...serviceDetails,
             subtotal: Math.round(subtotal * 100) / 100,
@@ -185,6 +189,15 @@ export const useInvoiceStore = create<InvoiceStore>()(
             netTotal,
           },
         });
+      },
+
+      setDiscount: (amount) => {
+        set((state) => ({
+          serviceDetails: state.serviceDetails
+            ? { ...state.serviceDetails, discount: amount }
+            : null,
+        }));
+        get().calculateTotals();
       },
 
       setErrors: (errors) => set({ errors }),
@@ -199,6 +212,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
           serviceDetails: {
             lineItems: [],
             subtotal: 0,
+            discount: 0,
             vatAmount: 0,
             vatPercentage: VAT_PERCENTAGE,
             netTotal: 0,
