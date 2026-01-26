@@ -175,7 +175,7 @@ export function PrintLayout({
             </thead>
             <tbody className="divide-y divide-slate-100">
               {serviceDetails.lineItems.map((item, index) => (
-                <tr key={item.id} className={index % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}>
+                <tr key={item.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'} border-b border-slate-100 last:border-0`}>
                   <td className="py-1.5 px-4 align-top">
                     <div className="font-bold text-slate-800 text-[10px] mb-0.5">{item.description}</div>
                     {item.subDescriptions.length > 0 && (
@@ -285,8 +285,11 @@ export function PrintLayout({
                         <span className="text-slate-500">Bank:</span>
                         <span className="font-semibold text-slate-900">{terms.bankName}</span>
 
-                        <span className="text-slate-500">Account:</span>
+                        <span className="text-slate-500">Acc. Name:</span>
                         <span className="font-semibold text-slate-900">{terms.accountName}</span>
+
+                        <span className="text-slate-500">Acc. No.:</span>
+                        <span className="font-semibold text-slate-900">{terms.accountNumber}</span>
 
                         <span className="text-slate-500">IBAN:</span>
                         <span className="font-mono text-slate-900 tracking-tight">{terms.iban}</span>
