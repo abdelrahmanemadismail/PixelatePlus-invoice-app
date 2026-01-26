@@ -1,15 +1,8 @@
 import { z } from 'zod';
 
-// UAE TRN validation pattern (15 digits)
-const trnPattern = /^\d{15}$/;
-
 export const clientInfoSchema = z.object({
   companyName: z.string().min(2, 'Company name must be at least 2 characters'),
-  trnNumber: z
-    .string()
-    .regex(trnPattern, 'TRN must be 15 digits')
-    .min(15, 'TRN must be 15 digits')
-    .max(15, 'TRN must be 15 digits'),
+  trnNumber: z.string().min(1, 'TRN Number is required'),
   contactPerson: z.string().optional(),
   email: z.union([z.email(), z.literal('')]).optional(),
   phone: z.string().optional(),

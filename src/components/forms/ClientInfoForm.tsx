@@ -190,8 +190,7 @@ export function ClientInfoForm() {
                   <FormLabel>TRN Number *</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="123456789012345"
-                      maxLength={15}
+                      placeholder="TRN Number"
                       {...field}
                     />
                   </FormControl>
