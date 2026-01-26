@@ -129,7 +129,7 @@
   /* Set A4 page size and margins */
   @page {
     size: A4;
-    margin: 5mm 0mm 2mm 0mm;
+    margin: 10mm 0mm 2mm 0mm;
   }
   @page :first {
     margin-top: 0mm;

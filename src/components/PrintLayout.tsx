@@ -43,7 +43,7 @@ export function PrintLayout({
   };
 
   return (
-    <div className="print-layout bg-white h-[296mm] w-full mx-auto p-[15mm] md:p-12 text-slate-900 relative flex flex-col font-sans text-[10px]">
+    <div className="print-layout bg-white min-h-[296mm] h-auto w-full mx-auto p-[15mm] md:p-12 text-slate-900 relative flex flex-col font-sans text-[10px]">
       {/* Decorative Top Border */}
       <div className="absolute top-0 left-0 right-0 h-2 bg-slate-900"></div>
 
