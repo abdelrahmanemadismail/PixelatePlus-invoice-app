@@ -77,7 +77,7 @@ export function PrintLayout({
         </div>
         <div className="text-right">
           <h2 className="text-[48px] font-black text-slate-200/80 tracking-tighter leading-[0.8] mb-4 select-none mr-2">
-            {documentType === 'invoice' ? 'INVOICE' : 'INQUIRY'}
+            {documentType === 'invoice' ? 'INVOICE' : 'QUOTATION'}
           </h2>
           <div className="inline-block text-left bg-white shadow-sm px-4 py-2.5 rounded-xl border border-slate-200 min-w-50">
             <div className="space-y-1.5">
