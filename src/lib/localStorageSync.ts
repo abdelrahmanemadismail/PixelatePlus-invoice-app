@@ -32,7 +32,7 @@ export const loadFromLocalStorage = (): InvoiceState | null => {
     if (!stored) return null;
 
     const wrapper: StorageWrapper = JSON.parse(stored);
-    
+
     // Version check - if version mismatch, ignore stored data
     if (wrapper.version !== STORAGE_VERSION) {
       console.warn('localStorage version mismatch, ignoring stored data');

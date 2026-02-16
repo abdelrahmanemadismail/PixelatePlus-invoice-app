@@ -23,7 +23,7 @@ const VAT_PERCENTAGE = 0; // VAT Disabled as per request
 /**
  * Generates unique ID for line items
  */
-export const generateId = (): string => 
+export const generateId = (): string =>
   `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 /**
@@ -148,7 +148,7 @@ export const deserializeFromParams = (params: URLSearchParams): InvoiceState | n
 
     const documentType = (params.get('documentType') as DocumentType) || defaultState.documentType;
     const currentStepStr = params.get('currentStep');
-    const currentStep = currentStepStr !== null 
+    const currentStep = currentStepStr !== null
       ? (parseInt(currentStepStr, 10) as InvoiceStep)
       : defaultState.currentStep;
 

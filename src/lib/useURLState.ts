@@ -53,7 +53,7 @@ export type UseInvoiceStateReturn = InvoiceState & InvoiceActions;
 export const useInvoiceState = (): UseInvoiceStateReturn => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Initialize state from URL or localStorage or defaults
   // This runs once on mount and updates when searchParams reference changes
   const getInitialState = useCallback((): InvoiceState => {
@@ -152,10 +152,10 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
         const newServiceDetails = prev.serviceDetails
           ? { ...prev.serviceDetails, ...data }
           : (data as ServiceDetails);
-        
+
         // Recalculate totals if line items are updated
         const updatedServiceDetails = calculateTotalsUtil(newServiceDetails);
-        
+
         return {
           ...prev,
           serviceDetails: updatedServiceDetails,
