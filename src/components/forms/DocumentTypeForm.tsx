@@ -1,13 +1,13 @@
 'use client';
 
-import { useInvoiceStore } from '@/store/invoiceStore';
+import { useInvoiceState } from '@/lib/useURLState';
 import { Card } from '@/components/ui/card';
 import { FileText, FileQuestion } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DocumentType } from '@/types/invoice';
 
 export function DocumentTypeForm() {
-  const { documentType, setDocumentType, setStep } = useInvoiceStore();
+  const { documentType, setDocumentType, setStep } = useInvoiceState();
 
   const handleSelect = (type: DocumentType) => {
     setDocumentType(type);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useInvoiceStore } from '@/store/invoiceStore';
+import { useInvoiceState } from '@/lib/useURLState';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { LineItemManager } from '@/components/LineItemManager';
 
 export function ServiceDetailsForm() {
-  const { serviceDetails, updateServiceDetails, setStep } = useInvoiceStore();
+  const { serviceDetails, updateServiceDetails, setStep } = useInvoiceState();
 
   const handleNext = () => {
     // if (!serviceDetails || serviceDetails.lineItems.length === 0) {

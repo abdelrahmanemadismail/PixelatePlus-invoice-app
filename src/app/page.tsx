@@ -1,6 +1,6 @@
 'use client';
 
-import { useInvoiceStore } from '@/store/invoiceStore';
+import { useInvoiceState } from '@/lib/useURLState';
 import { Stepper } from '@/components/Stepper';
 import { ClientInfoForm } from '@/components/forms/ClientInfoForm';
 import { ServiceDetailsForm } from '@/components/forms/ServiceDetailsForm';
@@ -21,7 +21,7 @@ import {
 import { FilePlus } from 'lucide-react';
 
 export default function Home() {
-  const { currentStep, reset } = useInvoiceStore();
+  const { currentStep, reset } = useInvoiceState();
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black">

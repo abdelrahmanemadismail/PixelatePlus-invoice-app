@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Plus, Trash2, Edit } from 'lucide-react';
-import { useInvoiceStore } from '@/store/invoiceStore';
+import { useInvoiceState } from '@/lib/useURLState';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,7 +26,7 @@ import {
 import type { LineItem } from '@/types/invoice';
 
 export function LineItemManager() {
-  const { serviceDetails, addLineItem, removeLineItem, updateLineItem, setDiscount } = useInvoiceStore();
+  const { serviceDetails, addLineItem, removeLineItem, updateLineItem, setDiscount } = useInvoiceState();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<LineItem | null>(null);
   const [formData, setFormData] = useState({

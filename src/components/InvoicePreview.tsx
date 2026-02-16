@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useInvoiceStore } from '@/store/invoiceStore';
+import { useInvoiceState } from '@/lib/useURLState';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -20,7 +20,7 @@ import { InvoiceStep } from '@/types/invoice';
 
 export function InvoicePreview() {
   const { clientInfo, serviceDetails, terms, invoiceNumber, quotationNumber, invoiceDate, validUntil, documentType, generateInvoiceNumber, setStep, reset } =
-    useInvoiceStore();
+    useInvoiceState();
 
   useEffect(() => {
     if (!invoiceNumber) {

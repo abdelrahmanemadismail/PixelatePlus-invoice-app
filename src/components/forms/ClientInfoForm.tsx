@@ -7,7 +7,7 @@ import { CalendarIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { clientInfoWithInvoiceSchema, type ClientInfoWithInvoiceInput } from '@/lib/validation';
-import { useInvoiceStore } from '@/store/invoiceStore';
+import { useInvoiceState } from '@/lib/useURLState';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -27,7 +27,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function ClientInfoForm() {
-  const { clientInfo, invoiceNumber, quotationNumber, invoiceDate, validUntil, setInvoiceNumber, setQuotationNumber, setInvoiceDate, setValidUntil, updateClientInfo, setStep } = useInvoiceStore();
+  const { clientInfo, invoiceNumber, quotationNumber, invoiceDate, validUntil, setInvoiceNumber, setQuotationNumber, setInvoiceDate, setValidUntil, updateClientInfo, setStep } = useInvoiceState();
 
   const form = useForm<ClientInfoWithInvoiceInput>({
     resolver: zodResolver(clientInfoWithInvoiceSchema),

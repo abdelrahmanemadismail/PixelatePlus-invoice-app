@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { termsSchema, type TermsInput } from '@/lib/validation';
-import { useInvoiceStore } from '@/store/invoiceStore';
+import { useInvoiceState } from '@/lib/useURLState';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -19,7 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function TermsForm() {
-  const { terms, updateTerms, setStep } = useInvoiceStore();
+  const { terms, updateTerms, setStep } = useInvoiceState();
 
   const form = useForm<TermsInput>({
     resolver: zodResolver(termsSchema),
