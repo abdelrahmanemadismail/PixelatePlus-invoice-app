@@ -11,14 +11,10 @@ export function ServiceDetailsForm() {
   const { serviceDetails, updateServiceDetails, setStep } = useInvoiceStore();
 
   const handleNext = () => {
-    if (!serviceDetails?.projectName?.trim()) {
-      alert('Please enter a project name before continuing.');
-      return;
-    }
-    if (!serviceDetails || serviceDetails.lineItems.length === 0) {
-      alert('Please add at least one line item before continuing.');
-      return;
-    }
+    // if (!serviceDetails || serviceDetails.lineItems.length === 0) {
+    //   alert('Please add at least one line item before continuing.');
+    //   return;
+    // }
     setStep(3); // Move to Terms
   };
 
@@ -36,7 +32,7 @@ export function ServiceDetailsForm() {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid gap-2">
-          <Label htmlFor="projectName">Project Name *</Label>
+          <Label htmlFor="projectName">Project Name</Label>
           <Input
             id="projectName"
             placeholder="e.g., Corporate Event Booth Setup"
