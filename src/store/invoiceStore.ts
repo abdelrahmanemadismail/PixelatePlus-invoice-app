@@ -61,6 +61,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
       currentStep: 0,
       clientInfo: null,
       serviceDetails: {
+        projectName: '',
         lineItems: [],
         subtotal: 0,
         discount: 0,

@@ -17,6 +17,7 @@ export interface LineItem {
 }
 
 export interface ServiceDetails {
+  projectName: string;
   lineItems: LineItem[];
   subtotal: number;
   discount: number;

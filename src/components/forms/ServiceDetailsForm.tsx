@@ -3,12 +3,18 @@
 import { useInvoiceStore } from '@/store/invoiceStore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { LineItemManager } from '@/components/LineItemManager';
 
 export function ServiceDetailsForm() {
-  const { serviceDetails, setStep } = useInvoiceStore();
+  const { serviceDetails, updateServiceDetails, setStep } = useInvoiceStore();
 
   const handleNext = () => {
+    if (!serviceDetails?.projectName?.trim()) {
+      alert('Please enter a project name before continuing.');
+      return;
+    }
     if (!serviceDetails || serviceDetails.lineItems.length === 0) {
       alert('Please add at least one line item before continuing.');
       return;
@@ -29,6 +35,16 @@ export function ServiceDetailsForm() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div className="grid gap-2">
+          <Label htmlFor="projectName">Project Name *</Label>
+          <Input
+            id="projectName"
+            placeholder="e.g., Corporate Event Booth Setup"
+            value={serviceDetails?.projectName || ''}
+            onChange={(e) => updateServiceDetails({ projectName: e.target.value })}
+          />
+        </div>
+
         <LineItemManager />
 
         <div className="flex justify-between gap-4 pt-4">

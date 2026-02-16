@@ -184,6 +184,13 @@ export function PrintLayout({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
+              {serviceDetails.projectName && (
+                <tr className="bg-slate-100 border-b border-slate-200">
+                  <td colSpan={4} className="py-2 px-4">
+                    <div className="font-bold text-slate-900 text-[11px] uppercase tracking-wider">Project: {serviceDetails.projectName}</div>
+                  </td>
+                </tr>
+              )}
               {serviceDetails.lineItems.map((item, index) => (
                 <tr key={item.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'} border-b border-slate-100 last:border-0`}>
                   <td className="py-1.5 px-4 align-top">
