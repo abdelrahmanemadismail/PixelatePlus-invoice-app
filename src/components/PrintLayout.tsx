@@ -66,7 +66,7 @@ export function PrintLayout({
           <img
             src="/logo.png"
             alt={companyInfo.name || 'Company logo'}
-            className="h-20 w-auto max-w-[200px] object-contain"
+            className="h-20 w-auto max-w-50 object-contain"
           />
 
           <div className="text-[9px] leading-relaxed text-slate-500 font-medium space-y-1.5">
