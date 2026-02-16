@@ -35,12 +35,23 @@ export interface TermsConditions {
   additionalNotes?: string;
 }
 
+export interface CompanyInfo {
+  name: string;
+  tagline: string;
+  phone: string;
+  email: string;
+  addressLine1: string;
+  addressLine2: string;
+}
+
 export interface InvoiceData {
   invoiceNumber: string;
   date: string;
   clientInfo: ClientInfo | null;
   serviceDetails: ServiceDetails | null;
   terms: TermsConditions | null;
+  companyInfo: CompanyInfo;
+  documentTitle: string;
   documentType: DocumentType;
 }
 

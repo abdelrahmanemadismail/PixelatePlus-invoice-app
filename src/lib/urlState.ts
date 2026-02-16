@@ -4,6 +4,7 @@ import type {
   TermsConditions,
   InvoiceStep,
   DocumentType,
+  CompanyInfo,
 } from '@/types/invoice';
 
 export interface InvoiceState {
@@ -12,6 +13,8 @@ export interface InvoiceState {
   clientInfo: ClientInfo | null;
   serviceDetails: ServiceDetails | null;
   terms: TermsConditions | null;
+  companyInfo: CompanyInfo;
+  documentTitle: string;
   invoiceNumber: string;
   quotationNumber: string;
   invoiceDate: string;
@@ -19,6 +22,9 @@ export interface InvoiceState {
 }
 
 const VAT_PERCENTAGE = 0; // VAT Disabled as per request
+
+export const getDefaultDocumentTitle = (documentType: DocumentType): string =>
+  documentType === 'invoice' ? 'INVOICE' : 'QUOTATION';
 
 /**
  * Generates unique ID for line items
@@ -86,6 +92,15 @@ export const getDefaultState = (): InvoiceState => ({
 • Quote validity: 7 days subject to availability
 • Cancellation Policy: Cancellations must be made 7 days before the reserved date. A 25% fee applies for late cancellations.`,
   },
+  companyInfo: {
+    name: 'Pixelate Plus',
+    tagline: 'Creative Event Solutions',
+    phone: '+971 55 557 0449',
+    email: 'info@pixelateuae.com',
+    addressLine1: 'Lootah Building, Floor 1 (A104), JVC',
+    addressLine2: 'Dubai, United Arab Emirates',
+  },
+  documentTitle: getDefaultDocumentTitle('invoice'),
   invoiceNumber: '',
   quotationNumber: '',
   invoiceDate: new Date().toISOString().split('T')[0],
@@ -119,6 +134,7 @@ export const serializeToParams = (state: InvoiceState): URLSearchParams => {
   params.set('quotationNumber', state.quotationNumber);
   params.set('invoiceDate', state.invoiceDate);
   params.set('validUntil', state.validUntil);
+  params.set('documentTitle', state.documentTitle);
 
   // Complex objects as JSON strings
   if (state.clientInfo) {
@@ -129,6 +145,9 @@ export const serializeToParams = (state: InvoiceState): URLSearchParams => {
   }
   if (state.terms) {
     params.set('terms', JSON.stringify(state.terms));
+  }
+  if (state.companyInfo) {
+    params.set('companyInfo', JSON.stringify(state.companyInfo));
   }
 
   return params;
@@ -151,6 +170,7 @@ export const deserializeFromParams = (params: URLSearchParams): InvoiceState | n
     const currentStep = currentStepStr !== null
       ? (parseInt(currentStepStr, 10) as InvoiceStep)
       : defaultState.currentStep;
+    const defaultDocumentTitle = getDefaultDocumentTitle(documentType);
 
     const state: InvoiceState = {
       documentType,
@@ -159,9 +179,11 @@ export const deserializeFromParams = (params: URLSearchParams): InvoiceState | n
       quotationNumber: params.get('quotationNumber') || defaultState.quotationNumber,
       invoiceDate: params.get('invoiceDate') || defaultState.invoiceDate,
       validUntil: params.get('validUntil') || defaultState.validUntil,
+      documentTitle: params.get('documentTitle') || defaultDocumentTitle,
       clientInfo: safeJsonParse<ClientInfo>(params.get('clientInfo')) || defaultState.clientInfo,
       serviceDetails: safeJsonParse<ServiceDetails>(params.get('serviceDetails')) || defaultState.serviceDetails,
       terms: safeJsonParse<TermsConditions>(params.get('terms')) || defaultState.terms,
+      companyInfo: safeJsonParse<CompanyInfo>(params.get('companyInfo')) || defaultState.companyInfo,
     };
 
     return state;

@@ -52,6 +52,23 @@ export const termsSchema = z.object({
   additionalNotes: z.string().optional(),
 });
 
+export const companyInfoSchema = z.object({
+  name: z.string().min(2, 'Company name is required'),
+  tagline: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.union([z.email(), z.literal('')]).optional(),
+  addressLine1: z.string().optional(),
+  addressLine2: z.string().optional(),
+});
+
+export const documentSettingsSchema = z.object({
+  documentTitle: z.string().min(1, 'Document title is required'),
+});
+
+export const termsWithCompanySchema = termsSchema
+  .merge(companyInfoSchema)
+  .merge(documentSettingsSchema);
+
 export const invoiceSchema = z.object({
   invoiceNumber: z.string().min(1, 'Invoice number is required'),
   quotationNumber: z.string().optional(),
@@ -68,4 +85,7 @@ export type ClientInfoWithInvoiceInput = z.infer<typeof clientInfoWithInvoiceSch
 export type LineItemInput = z.infer<typeof lineItemSchema>;
 export type ServiceDetailsInput = z.infer<typeof serviceDetailsSchema>;
 export type TermsInput = z.infer<typeof termsSchema>;
+export type CompanyInfoInput = z.infer<typeof companyInfoSchema>;
+export type DocumentSettingsInput = z.infer<typeof documentSettingsSchema>;
+export type TermsWithCompanyInput = z.infer<typeof termsWithCompanySchema>;
 export type InvoiceInput = z.infer<typeof invoiceSchema>;

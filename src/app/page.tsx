@@ -21,7 +21,10 @@ import {
 import { FilePlus } from 'lucide-react';
 
 export default function Home() {
-  const { currentStep, reset } = useInvoiceState();
+  const { currentStep, reset, companyInfo } = useInvoiceState();
+  const companySubtitle = companyInfo.tagline
+    ? `${companyInfo.name} - ${companyInfo.tagline}`
+    : companyInfo.name;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black">
@@ -33,7 +36,7 @@ export default function Home() {
               Invoice Generator
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Pixelate Plus - Creative Event Solutions
+              {companySubtitle}
             </p>
           {currentStep > 0 && (
             <Dialog>

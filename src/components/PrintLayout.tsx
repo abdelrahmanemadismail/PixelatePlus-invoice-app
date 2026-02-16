@@ -3,13 +3,21 @@
 
 import { Button } from '@/components/ui/button';
 import { Edit, MapPin, Phone, Mail, CreditCard, FileText } from 'lucide-react';
-import type { ClientInfo, ServiceDetails, TermsConditions, DocumentType } from '@/types/invoice';
+import type {
+  ClientInfo,
+  ServiceDetails,
+  TermsConditions,
+  DocumentType,
+  CompanyInfo,
+} from '@/types/invoice';
 
 interface PrintLayoutProps {
   documentType?: DocumentType;
   clientInfo: ClientInfo;
   serviceDetails: ServiceDetails;
   terms: TermsConditions;
+  companyInfo: CompanyInfo;
+  documentTitle: string;
   invoiceNumber: string;
   quotationNumber?: string;
   invoiceDate: string;
@@ -22,6 +30,8 @@ export function PrintLayout({
   clientInfo,
   serviceDetails,
   terms,
+  companyInfo,
+  documentTitle,
   invoiceNumber,
   quotationNumber,
   invoiceDate,
@@ -53,31 +63,35 @@ export function PrintLayout({
       <div className="flex justify-between items-start mb-6 mt-2">
         <div className="space-y-4">
           {/* Logo replaces text */}
-          <img src="/logo.png" alt="Pixelate Plus" className="h-20 w-auto max-w-[200px] object-contain" />
+          <img
+            src="/logo.png"
+            alt={companyInfo.name || 'Company logo'}
+            className="h-20 w-auto max-w-[200px] object-contain"
+          />
 
           <div className="text-[9px] leading-relaxed text-slate-500 font-medium space-y-1.5">
             <div className="flex gap-4 ">
               <div className="flex items-center gap-1.5">
                 <Phone className="w-3 h-3 text-slate-400" />
-                <p>+971 55 557 0449</p>
+                <p>{companyInfo.phone}</p>
               </div>
               <div className="flex items-center gap-1.5">
                 <Mail className="w-3 h-3 text-slate-400" />
-                <p>info@pixelateuae.com</p>
+                <p>{companyInfo.email}</p>
               </div>
             </div>
             <div className="flex gap-2">
               <MapPin className="w-3 h-3 text-slate-400 mt-0.5 shrink-0" />
               <div>
-                <p>Lootah Building, Floor 1 (A104), JVC</p>
-                <p>Dubai, United Arab Emirates</p>
+                <p>{companyInfo.addressLine1}</p>
+                <p>{companyInfo.addressLine2}</p>
               </div>
             </div>
           </div>
         </div>
         <div className="text-right">
           <h2 className="text-[48px] font-black text-slate-200/80 tracking-tighter leading-[0.8] mb-4 select-none mr-2">
-            {documentType === 'invoice' ? 'INVOICE' : 'QUOTATION'}
+            {documentTitle}
           </h2>
           <div className="inline-block text-left bg-white shadow-sm px-4 py-2.5 rounded-xl border border-slate-200 min-w-50">
             <div className="space-y-1.5">

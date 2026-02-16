@@ -19,8 +19,21 @@ import { PrintLayout } from '@/components/PrintLayout';
 import { InvoiceStep } from '@/types/invoice';
 
 export function InvoicePreview() {
-  const { clientInfo, serviceDetails, terms, invoiceNumber, quotationNumber, invoiceDate, validUntil, documentType, generateInvoiceNumber, setStep, reset } =
-    useInvoiceState();
+  const {
+    clientInfo,
+    serviceDetails,
+    terms,
+    companyInfo,
+    documentTitle,
+    invoiceNumber,
+    quotationNumber,
+    invoiceDate,
+    validUntil,
+    documentType,
+    generateInvoiceNumber,
+    setStep,
+    reset,
+  } = useInvoiceState();
 
   useEffect(() => {
     if (!invoiceNumber) {
@@ -90,6 +103,8 @@ export function InvoicePreview() {
         clientInfo={clientInfo!}
         serviceDetails={serviceDetails!}
         terms={terms!}
+        companyInfo={companyInfo}
+        documentTitle={documentTitle}
         invoiceNumber={invoiceNumber}
         quotationNumber={quotationNumber}
         invoiceDate={invoiceDate}

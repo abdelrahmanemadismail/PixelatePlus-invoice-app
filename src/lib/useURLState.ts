@@ -9,12 +9,14 @@ import type {
   InvoiceStep,
   LineItem,
   DocumentType,
+  CompanyInfo,
 } from '@/types/invoice';
 import {
   type InvoiceState,
   serializeToParams,
   deserializeFromParams,
   getDefaultState,
+  getDefaultDocumentTitle,
   generateId,
   calculateLineItemTotal,
   calculateTotals as calculateTotalsUtil,
@@ -32,6 +34,8 @@ interface InvoiceActions {
   updateClientInfo: (data: Partial<ClientInfo>) => void;
   updateServiceDetails: (data: Partial<ServiceDetails>) => void;
   updateTerms: (data: Partial<TermsConditions>) => void;
+  updateCompanyInfo: (data: Partial<CompanyInfo>) => void;
+  setDocumentTitle: (value: string) => void;
   addLineItem: (item: Omit<LineItem, 'id' | 'total'>) => void;
   removeLineItem: (id: string) => void;
   updateLineItem: (id: string, data: Partial<Omit<LineItem, 'id'>>) => void;
@@ -122,7 +126,17 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
   // Actions
   const setDocumentType = useCallback(
     (type: DocumentType) => {
-      setState((prev) => ({ ...prev, documentType: type }), false);
+      setState((prev) => {
+        const currentDefaultTitle = getDefaultDocumentTitle(prev.documentType);
+        const nextDefaultTitle = getDefaultDocumentTitle(type);
+        const shouldUpdateTitle = prev.documentTitle === currentDefaultTitle;
+
+        return {
+          ...prev,
+          documentType: type,
+          documentTitle: shouldUpdateTitle ? nextDefaultTitle : prev.documentTitle,
+        };
+      }, false);
     },
     [setState]
   );
@@ -171,6 +185,23 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
         ...prev,
         terms: prev.terms ? { ...prev.terms, ...data } : (data as TermsConditions),
       }), false);
+    },
+    [setState]
+  );
+
+  const updateCompanyInfo = useCallback(
+    (data: Partial<CompanyInfo>) => {
+      setState((prev) => ({
+        ...prev,
+        companyInfo: { ...prev.companyInfo, ...data },
+      }), false);
+    },
+    [setState]
+  );
+
+  const setDocumentTitle = useCallback(
+    (value: string) => {
+      setState((prev) => ({ ...prev, documentTitle: value }), false);
     },
     [setState]
   );
@@ -320,6 +351,8 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
     updateClientInfo,
     updateServiceDetails,
     updateTerms,
+    updateCompanyInfo,
+    setDocumentTitle,
     addLineItem,
     removeLineItem,
     updateLineItem,
