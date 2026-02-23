@@ -80,6 +80,15 @@ export function PrintLayout({
                 <p>{companyInfo.email}</p>
               </div>
             </div>
+            {companyInfo.trnNumber && (
+              <div className="flex gap-2">
+                {/* <FileText className="w-3 h-3 text-slate-400 mt-0.5 shrink-0" /> */}
+                <p className="text-slate-400 text-[10px] uppercase font-semibold">TRN</p>
+                <div>
+                  <p className="font-mono text-[10px] text-slate-700">{companyInfo.trnNumber}</p>
+                </div>
+              </div>
+            )}
             <div className="flex gap-2">
               <MapPin className="w-3 h-3 text-slate-400 mt-0.5 shrink-0" />
               <div>

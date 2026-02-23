@@ -21,7 +21,7 @@ export interface InvoiceState {
   validUntil: string;
 }
 
-const VAT_PERCENTAGE = 0; // VAT Disabled as per request
+const VAT_PERCENTAGE = 5; // UAE standard 5% VAT
 
 export const getDefaultDocumentTitle = (documentType: DocumentType): string =>
   documentType === 'invoice' ? 'INVOICE' : 'QUOTATION';
@@ -99,6 +99,7 @@ export const getDefaultState = (): InvoiceState => ({
     email: 'info@pixelateuae.com',
     addressLine1: 'Lootah Building, Floor 1 (A104), JVC',
     addressLine2: 'Dubai, United Arab Emirates',
+    trnNumber: '105353650200003',
   },
   documentTitle: getDefaultDocumentTitle('invoice'),
   invoiceNumber: '',

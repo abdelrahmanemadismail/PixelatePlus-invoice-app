@@ -22,11 +22,7 @@ import {
   calculateTotals as calculateTotalsUtil,
   generateInvoiceNumber as generateInvoiceNumberUtil,
 } from './urlState';
-import {
-  saveToLocalStorage,
-  loadFromLocalStorage,
-  clearLocalStorage,
-} from './localStorageSync';
+
 
 interface InvoiceActions {
   setDocumentType: (type: DocumentType) => void;
@@ -58,16 +54,12 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Initialize state from URL or localStorage or defaults
+  // Initialize state from URL or defaults
   // This runs once on mount and updates when searchParams reference changes
   const getInitialState = useCallback((): InvoiceState => {
     // Try URL first
     const urlState = deserializeFromParams(searchParams);
     if (urlState) return urlState;
-
-    // Try localStorage backup
-    const localState = loadFromLocalStorage();
-    if (localState) return localState;
 
     // Fall back to defaults
     return getDefaultState();
@@ -75,7 +67,7 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
 
   const [state, setStateInternal] = useState<InvoiceState>(getInitialState);
 
-  // Sync state to URL and localStorage
+  // Sync state to URL
   const syncStateToURL = useCallback(
     (newState: InvoiceState, createHistoryEntry: boolean = false) => {
       const params = serializeToParams(newState);
@@ -86,9 +78,6 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
       } else {
         router.replace(url);
       }
-
-      // Save to localStorage as backup
-      saveToLocalStorage(newState);
     },
     [router]
   );
@@ -115,7 +104,6 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
       setStateInternal((currentState) => {
         // Only update if the URL state is different from current state
         if (JSON.stringify(currentState) !== JSON.stringify(urlState)) {
-          saveToLocalStorage(urlState);
           return urlState;
         }
         return currentState;
@@ -306,7 +294,6 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
     const defaultState = getDefaultState();
     setStateInternal(defaultState);
     syncStateToURL(defaultState, true); // Create history entry for reset
-    clearLocalStorage();
   }, [syncStateToURL]);
 
   const generateInvoiceNumber = useCallback(() => {

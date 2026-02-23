@@ -48,6 +48,7 @@ export function TermsForm() {
       email: companyInfo?.email || 'info@pixelateuae.com',
       addressLine1: companyInfo?.addressLine1 || 'Lootah Building, Floor 1 (A104), JVC',
       addressLine2: companyInfo?.addressLine2 || 'Dubai, United Arab Emirates',
+      trnNumber: companyInfo?.trnNumber || '105353650200003',
     },
   });
 
@@ -67,6 +68,7 @@ export function TermsForm() {
       email: data.email || '',
       addressLine1: data.addressLine1 || '',
       addressLine2: data.addressLine2 || '',
+      trnNumber: data.trnNumber || '',
     });
     setDocumentTitle(data.documentTitle);
     setStep(4); // Move to Preview
@@ -189,6 +191,20 @@ export function TermsForm() {
                     <FormLabel>Address Line 2</FormLabel>
                     <FormControl>
                       <Input placeholder="Dubai, United Arab Emirates" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="trnNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tax Registration Number (TRN)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="105353650200003" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -42,6 +42,7 @@ export interface CompanyInfo {
   email: string;
   addressLine1: string;
   addressLine2: string;
+  trnNumber?: string;
 }
 
 export interface InvoiceData {

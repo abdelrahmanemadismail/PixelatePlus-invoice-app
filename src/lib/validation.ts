@@ -59,6 +59,7 @@ export const companyInfoSchema = z.object({
   email: z.union([z.email(), z.literal('')]).optional(),
   addressLine1: z.string().optional(),
   addressLine2: z.string().optional(),
+  trnNumber: z.string().optional(),
 });
 
 export const documentSettingsSchema = z.object({
