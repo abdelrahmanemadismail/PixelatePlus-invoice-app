@@ -93,7 +93,7 @@ export const getDefaultState = (): InvoiceState => ({
 • Cancellation Policy: Cancellations must be made 7 days before the reserved date. A 25% fee applies for late cancellations.`,
   },
   companyInfo: {
-    name: 'Pixelate Plus',
+    name: 'PIXELAT PLUS ADVERTISING',
     tagline: 'Creative Event Solutions',
     phone: '+971 55 557 0449',
     email: 'info@pixelateuae.com',
