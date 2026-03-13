@@ -295,6 +295,12 @@ export function LineItemManager() {
                 onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
               />
             </div>
+            <div className="flex justify-between">
+              <span>Subtotal After Discount:</span>
+              <span className="font-medium">
+                {formatCurrency(Math.max(0, serviceDetails.subtotal - serviceDetails.discount))}
+              </span>
+            </div>
             {(serviceDetails.vatAmount > 0) && (
               <div className="flex justify-between">
                 <span>VAT ({serviceDetails.vatPercentage}%):</span>

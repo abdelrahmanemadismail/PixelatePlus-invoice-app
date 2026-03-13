@@ -303,6 +303,12 @@ export function PrintLayout({
                     <span className="font-bold text-sm">-{formatCurrency(serviceDetails.discount)}</span>
                   </div>
                 )}
+                <div className="flex justify-between text-[10px] items-center">
+                  <span className="text-slate-500 font-medium">Subtotal After Discount</span>
+                  <span className="font-bold text-slate-700 text-sm">
+                    {formatCurrency(Math.max(0, serviceDetails.subtotal - serviceDetails.discount))}
+                  </span>
+                </div>
                 {serviceDetails.vatAmount > 0 && (
                   <div className="flex justify-between text-[10px] items-center">
                     <span className="text-slate-500 font-medium">VAT ({serviceDetails.vatPercentage}%)</span>
