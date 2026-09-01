@@ -33,33 +33,68 @@ export const generateId = (): string =>
   `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 /**
- * Calculates line item total
+ * Calculates line item values: taxableTotal, vatAmount, and total amount
+ */
+export const calculateLineItemValues = (
+  unitPrice: number | undefined,
+  quantity: number,
+  vatRate: number = VAT_PERCENTAGE
+): { taxableTotal: number; vatRate: number; vatAmount: number; total: number } => {
+  if (unitPrice === undefined || isNaN(unitPrice)) {
+    return { taxableTotal: 0, vatRate, vatAmount: 0, total: 0 };
+  }
+  const taxableTotal = Math.round(unitPrice * quantity * 100) / 100;
+  const vatAmount = Math.round(taxableTotal * (vatRate / 100) * 100) / 100;
+  const total = Math.round((taxableTotal + vatAmount) * 100) / 100;
+  return { taxableTotal, vatRate, vatAmount, total };
+};
+
+/**
+ * Calculates line item total (legacy fallback helper)
  */
 export const calculateLineItemTotal = (
   unitPrice: number | undefined,
-  quantity: number
+  quantity: number,
+  vatRate: number = VAT_PERCENTAGE
 ): number => {
-  if (unitPrice === undefined) return 0;
-  return Math.round(unitPrice * quantity * 100) / 100;
+  return calculateLineItemValues(unitPrice, quantity, vatRate).total;
 };
 
 /**
  * Calculates all totals for service details
  */
 export const calculateTotals = (serviceDetails: ServiceDetails): ServiceDetails => {
-  const subtotal = serviceDetails.lineItems.reduce(
-    (sum, item) => sum + item.total,
+  const lineItems = serviceDetails.lineItems.map((item) => {
+    const vatRate = item.vatRate !== undefined ? item.vatRate : (serviceDetails.vatPercentage || VAT_PERCENTAGE);
+    const computed = calculateLineItemValues(item.unitPrice, item.quantity, vatRate);
+    return {
+      ...item,
+      vatRate,
+      taxableTotal: computed.taxableTotal,
+      vatAmount: computed.vatAmount,
+      total: computed.total,
+    };
+  });
+
+  const subtotal = lineItems.reduce(
+    (sum, item) => sum + (item.taxableTotal || 0),
     0
   );
   const discount = serviceDetails.discount || 0;
   const taxableAmount = Math.max(0, subtotal - discount);
-  const vatAmount = Math.round(taxableAmount * (VAT_PERCENTAGE / 100) * 100) / 100;
-  const netTotal = Math.round((taxableAmount + vatAmount) * 100) / 100;
+
+  // If there's a discount, calculate VAT based on discounted taxable base; otherwise sum individual VATs
+  const totalVat = discount > 0
+    ? Math.round(taxableAmount * ((serviceDetails.vatPercentage || VAT_PERCENTAGE) / 100) * 100) / 100
+    : lineItems.reduce((sum, item) => sum + (item.vatAmount || 0), 0);
+
+  const netTotal = Math.round((taxableAmount + totalVat) * 100) / 100;
 
   return {
     ...serviceDetails,
+    lineItems,
     subtotal: Math.round(subtotal * 100) / 100,
-    vatAmount,
+    vatAmount: Math.round(totalVat * 100) / 100,
     netTotal,
   };
 };

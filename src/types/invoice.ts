@@ -13,6 +13,9 @@ export interface LineItem {
   subDescriptions: string[];
   unitPrice?: number;
   quantity: number;
+  taxableTotal?: number;
+  vatRate?: number; // VAT percentage, default 5
+  vatAmount?: number;
   total: number;
 }
 

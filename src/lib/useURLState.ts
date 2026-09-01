@@ -19,6 +19,7 @@ import {
   getDefaultDocumentTitle,
   generateId,
   calculateLineItemTotal,
+  calculateLineItemValues,
   calculateTotals as calculateTotalsUtil,
   generateInvoiceNumber as generateInvoiceNumberUtil,
 } from './urlState';
@@ -199,10 +200,15 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
       setState((prev) => {
         if (!prev.serviceDetails) return prev;
 
+        const vatRate = item.vatRate !== undefined ? item.vatRate : (prev.serviceDetails.vatPercentage || 5);
+        const computed = calculateLineItemValues(item.unitPrice, item.quantity, vatRate);
         const newItem: LineItem = {
           id: generateId(),
           ...item,
-          total: calculateLineItemTotal(item.unitPrice, item.quantity),
+          vatRate,
+          taxableTotal: computed.taxableTotal,
+          vatAmount: computed.vatAmount,
+          total: computed.total,
         };
 
         const updatedServiceDetails = {
@@ -246,12 +252,18 @@ export const useInvoiceState = (): UseInvoiceStateReturn => {
         const updatedItems = prev.serviceDetails.lineItems.map((item) => {
           if (item.id === id) {
             const updatedItem = { ...item, ...data };
+            const vatRate = updatedItem.vatRate !== undefined ? updatedItem.vatRate : (prev.serviceDetails?.vatPercentage || 5);
+            const computed = calculateLineItemValues(
+              updatedItem.unitPrice,
+              updatedItem.quantity,
+              vatRate
+            );
             return {
               ...updatedItem,
-              total: calculateLineItemTotal(
-                updatedItem.unitPrice,
-                updatedItem.quantity
-              ),
+              vatRate,
+              taxableTotal: computed.taxableTotal,
+              vatAmount: computed.vatAmount,
+              total: computed.total,
             };
           }
           return item;

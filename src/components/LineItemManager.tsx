@@ -19,6 +19,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -34,6 +35,7 @@ export function LineItemManager() {
     subDescriptions: '',
     unitPrice: '',
     quantity: '1',
+    vatRate: '5',
   });
 
   const resetForm = () => {
@@ -42,6 +44,7 @@ export function LineItemManager() {
       subDescriptions: '',
       unitPrice: '',
       quantity: '1',
+      vatRate: '5',
     });
     setEditingItem(null);
   };
@@ -54,11 +57,14 @@ export function LineItemManager() {
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
 
+    const vatRateNum = formData.vatRate !== '' ? parseFloat(formData.vatRate) : 5;
+
     addLineItem({
       description: formData.description,
       subDescriptions: subDescArray,
       unitPrice: formData.unitPrice ? parseFloat(formData.unitPrice) : undefined,
       quantity: parseInt(formData.quantity) || 1,
+      vatRate: isNaN(vatRateNum) ? 5 : vatRateNum,
     });
 
     resetForm();
@@ -72,6 +78,7 @@ export function LineItemManager() {
       subDescriptions: item.subDescriptions.join('\n'),
       unitPrice: item.unitPrice !== undefined ? item.unitPrice.toString() : '',
       quantity: item.quantity.toString(),
+      vatRate: item.vatRate !== undefined ? item.vatRate.toString() : '5',
     });
     setIsDialogOpen(true);
   };
@@ -84,11 +91,14 @@ export function LineItemManager() {
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
 
+    const vatRateNum = formData.vatRate !== '' ? parseFloat(formData.vatRate) : 5;
+
     updateLineItem(editingItem.id, {
       description: formData.description,
       subDescriptions: subDescArray,
       unitPrice: formData.unitPrice ? parseFloat(formData.unitPrice) : undefined,
       quantity: parseInt(formData.quantity) || 1,
+      vatRate: isNaN(vatRateNum) ? 5 : vatRateNum,
     });
 
     resetForm();
@@ -109,7 +119,7 @@ export function LineItemManager() {
   };
 
   const formatCurrency = (amount: number | undefined) => {
-    if (amount === undefined) return '';
+    if (amount === undefined || amount === 0) return '';
     return new Intl.NumberFormat('en-AE', {
       style: 'currency',
       currency: 'AED',
@@ -119,7 +129,10 @@ export function LineItemManager() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Line Items</h3>
+        <div>
+          <h3 className="text-lg font-semibold">Line Items</h3>
+          <p className="text-xs text-muted-foreground">Manage items, unit prices, and per-item VAT rates</p>
+        </div>
         <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
           <DialogTrigger asChild>
             <Button>
@@ -162,7 +175,7 @@ export function LineItemManager() {
                   }
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-3">
                 <div className="grid gap-2">
                   <Label htmlFor="unitPrice">Unit Price (AED)</Label>
                   <Input
@@ -190,6 +203,20 @@ export function LineItemManager() {
                     }
                   />
                 </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="vatRate">VAT Rate (%)</Label>
+                  <Input
+                    id="vatRate"
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    placeholder="5"
+                    value={formData.vatRate}
+                    onChange={(e) =>
+                      setFormData({ ...formData, vatRate: e.target.value })
+                    }
+                  />
+                </div>
               </div>
             </div>
             <DialogFooter>
@@ -212,60 +239,106 @@ export function LineItemManager() {
       </div>
 
       {serviceDetails && serviceDetails.lineItems.length > 0 ? (
-        <div className="border rounded-lg">
+        <div className="border rounded-lg overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Description</TableHead>
-                <TableHead className="text-right">Unit Price</TableHead>
-                <TableHead className="text-right">Qty</TableHead>
-                <TableHead className="text-right">Total</TableHead>
-                <TableHead className="w-25">Actions</TableHead>
+                <TableHead className="min-w-64">Description</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Unit</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Qty</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Taxable Total</TableHead>
+                <TableHead className="text-center whitespace-nowrap">VAT Rate</TableHead>
+                <TableHead className="text-right whitespace-nowrap">VAT</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Total Amount</TableHead>
+                <TableHead className="w-20 text-center">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {serviceDetails.lineItems.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{item.description}</div>
-                      {item.subDescriptions.length > 0 && (
-                        <ul className="mt-1 text-sm text-muted-foreground list-disc list-inside">
-                          {item.subDescriptions.map((sub, idx) => (
-                            <li key={idx}>{sub}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(item.unitPrice)}
-                  </TableCell>
-                  <TableCell className="text-right">{item.quantity}</TableCell>
-                  <TableCell className="text-right font-medium">
-                    {formatCurrency(item.total)}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEdit(item)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(item.id)}
-                      >
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {serviceDetails.lineItems.map((item) => {
+                const hasPrice = item.unitPrice !== undefined && item.unitPrice > 0;
+                const taxableTotal = item.taxableTotal ?? (hasPrice ? (item.unitPrice! * item.quantity) : 0);
+                const vatRate = item.vatRate !== undefined ? item.vatRate : 5;
+                const vatAmount = item.vatAmount ?? (taxableTotal * (vatRate / 100));
+                const totalAmount = item.total ?? (taxableTotal + vatAmount);
+
+                return (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <div>
+                        <div className="font-medium text-sm">{item.description}</div>
+                        {item.subDescriptions.length > 0 && (
+                          <ul className="mt-1 text-xs text-muted-foreground list-disc list-inside">
+                            {item.subDescriptions.map((sub, idx) => (
+                              <li key={idx}>{sub}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right whitespace-nowrap text-xs">
+                      {hasPrice ? formatCurrency(item.unitPrice) : ''}
+                    </TableCell>
+                    <TableCell className="text-right text-xs">
+                      {hasPrice ? item.quantity : ''}
+                    </TableCell>
+                    <TableCell className="text-right font-medium whitespace-nowrap text-xs">
+                      {taxableTotal > 0 ? formatCurrency(taxableTotal) : ''}
+                    </TableCell>
+                    <TableCell className="text-center text-xs text-muted-foreground whitespace-nowrap">
+                      {hasPrice ? `${vatRate}%` : ''}
+                    </TableCell>
+                    <TableCell className="text-right text-xs whitespace-nowrap text-muted-foreground">
+                      {vatAmount > 0 ? formatCurrency(vatAmount) : ''}
+                    </TableCell>
+                    <TableCell className="text-right font-semibold whitespace-nowrap text-xs">
+                      {totalAmount > 0 ? formatCurrency(totalAmount) : ''}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => handleEdit(item)}
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-destructive"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
+            <TableFooter>
+              <TableRow className="bg-muted/70 font-semibold border-t-2">
+                <TableCell className="font-bold text-sm">
+                  Total Cost
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell className="text-right font-bold text-xs whitespace-nowrap">
+                  {serviceDetails.subtotal > 0 ? (formatCurrency(serviceDetails.subtotal) || 'AED 0.00') : ''}
+                </TableCell>
+                <TableCell className="text-center font-bold text-xs text-muted-foreground whitespace-nowrap">
+                  {serviceDetails.subtotal > 0 ? `${serviceDetails.vatPercentage || 5}%` : ''}
+                </TableCell>
+                <TableCell className="text-right font-bold text-xs whitespace-nowrap">
+                  {serviceDetails.vatAmount > 0 ? (formatCurrency(serviceDetails.vatAmount) || 'AED 0.00') : ''}
+                </TableCell>
+                <TableCell className="text-right font-bold text-xs whitespace-nowrap text-primary">
+                  {serviceDetails.netTotal > 0 ? (formatCurrency(serviceDetails.netTotal) || 'AED 0.00') : ''}
+                </TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableFooter>
           </Table>
         </div>
       ) : (
@@ -276,42 +349,42 @@ export function LineItemManager() {
 
       {serviceDetails && serviceDetails.lineItems.length > 0 && (
         <div className="flex justify-end">
-          <div className="w-64 space-y-2 text-sm">
+          <div className="w-72 space-y-2 text-sm">
             <div className="flex justify-between">
-              <span>Subtotal:</span>
+              <span className="text-muted-foreground">Subtotal (Taxable):</span>
               <span className="font-medium">
-                {formatCurrency(serviceDetails.subtotal)}
+                {formatCurrency(serviceDetails.subtotal) || 'AED 0.00'}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span>Discount:</span>
+              <span className="text-muted-foreground">Discount:</span>
               <Input
                 type="number"
                 min="0"
                 step="0.01"
                 placeholder="0.00"
-                className="w-24 h-8 text-right"
+                className="w-24 h-8 text-right text-xs"
                 value={serviceDetails.discount || ''}
                 onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
               />
             </div>
-            <div className="flex justify-between">
-              <span>Subtotal After Discount:</span>
-              <span className="font-medium">
-                {formatCurrency(Math.max(0, serviceDetails.subtotal - serviceDetails.discount))}
-              </span>
-            </div>
-            {(serviceDetails.vatAmount > 0) && (
+            {serviceDetails.discount > 0 && (
               <div className="flex justify-between">
-                <span>VAT ({serviceDetails.vatPercentage}%):</span>
+                <span className="text-muted-foreground">After Discount:</span>
                 <span className="font-medium">
-                  {formatCurrency(serviceDetails.vatAmount)}
+                  {formatCurrency(Math.max(0, serviceDetails.subtotal - serviceDetails.discount)) || 'AED 0.00'}
                 </span>
               </div>
             )}
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Total VAT:</span>
+              <span className="font-medium">
+                {formatCurrency(serviceDetails.vatAmount) || 'AED 0.00'}
+              </span>
+            </div>
             <div className="flex justify-between text-base font-bold pt-2 border-t">
-              <span>Net Total:</span>
-              <span>{formatCurrency(serviceDetails.netTotal)}</span>
+              <span>Total Amount:</span>
+              <span className="text-primary">{formatCurrency(serviceDetails.netTotal) || 'AED 0.00'}</span>
             </div>
           </div>
         </div>

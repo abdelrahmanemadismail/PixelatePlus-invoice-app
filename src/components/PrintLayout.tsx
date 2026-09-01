@@ -39,7 +39,15 @@ export function PrintLayout({
   onEditSection,
 }: PrintLayoutProps) {
   const formatCurrency = (amount: number | undefined) => {
-    if (amount === undefined) return '';
+    if (amount === undefined || amount === 0) return '';
+    return new Intl.NumberFormat('en-AE', {
+      style: 'currency',
+      currency: 'AED',
+    }).format(amount);
+  };
+
+  const formatAlwaysCurrency = (amount: number | undefined) => {
+    if (amount === undefined) return 'AED 0.00';
     return new Intl.NumberFormat('en-AE', {
       style: 'currency',
       currency: 'AED',
@@ -204,46 +212,87 @@ export function PrintLayout({
           <table className="w-full text-[10px] box-border">
             <thead>
               <tr className="bg-slate-900 text-slate-50 border-b border-slate-900">
-                <th className="py-1.5 px-4 text-left font-semibold w-[50%]">Description</th>
-                <th className="py-1.5 px-4 text-right font-semibold">Unit Price</th>
-                <th className="py-1.5 px-4 text-right font-semibold">Qty</th>
-                <th className="py-1.5 px-4 text-right font-semibold">Total</th>
+                <th className="py-1.5 px-3 text-left font-semibold w-[38%]">Description</th>
+                <th className="py-1.5 px-2 text-right font-semibold whitespace-nowrap">Unit</th>
+                <th className="py-1.5 px-2 text-right font-semibold whitespace-nowrap">Qty</th>
+                <th className="py-1.5 px-2 text-right font-semibold whitespace-nowrap">Taxable Total</th>
+                <th className="py-1.5 px-2 text-center font-semibold whitespace-nowrap">VAT Rate</th>
+                <th className="py-1.5 px-2 text-right font-semibold whitespace-nowrap">VAT</th>
+                <th className="py-1.5 px-3 text-right font-semibold whitespace-nowrap">Total Amount</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {serviceDetails.projectName && (
                 <tr className="bg-slate-100 border-b border-slate-200">
-                  <td colSpan={4} className="py-2 px-4">
+                  <td colSpan={7} className="py-2 px-3">
                     <div className="font-bold text-slate-900 text-[11px] uppercase tracking-wider">Project: {serviceDetails.projectName}</div>
                   </td>
                 </tr>
               )}
-              {serviceDetails.lineItems.map((item, index) => (
-                <tr key={item.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'} border-b border-slate-100 last:border-0`}>
-                  <td className="py-1.5 px-4 align-top">
-                    <div className="font-bold text-slate-800 text-[10px] mb-0.5">{item.description}</div>
-                    {item.subDescriptions.length > 0 && (
-                      <ul className="text-slate-500 space-y-0.5 list-none">
-                        {item.subDescriptions.map((sub, idx) => (
-                          <li key={idx} className="pl-0 before:content-['-'] before:mr-1 before:text-slate-300">
-                            {sub}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </td>
-                  <td className="py-1.5 px-4 text-right font-medium text-slate-600 align-top whitespace-nowrap">
-                    {formatCurrency(item.unitPrice)}
-                  </td>
-                  <td className="py-1.5 px-4 text-right text-slate-600 align-top">
-                    {item.quantity}
-                  </td>
-                  <td className="py-1.5 px-4 text-right font-bold text-slate-900 align-top whitespace-nowrap">
-                    {item.total > 0 && formatCurrency(item.total)}
-                  </td>
-                </tr>
-              ))}
+              {serviceDetails.lineItems.map((item, index) => {
+                const hasPrice = item.unitPrice !== undefined && item.unitPrice > 0;
+                const taxableTotal = item.taxableTotal ?? (hasPrice ? (item.unitPrice! * item.quantity) : 0);
+                const vatRate = item.vatRate !== undefined ? item.vatRate : (serviceDetails.vatPercentage || 5);
+                const vatAmount = item.vatAmount ?? (taxableTotal * (vatRate / 100));
+                const totalAmount = item.total ?? (taxableTotal + vatAmount);
+
+                return (
+                  <tr key={item.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'} border-b border-slate-100 last:border-0`}>
+                    <td className="py-1.5 px-3 align-top">
+                      <div className="font-bold text-slate-800 text-[10px] mb-0.5">{item.description}</div>
+                      {item.subDescriptions && item.subDescriptions.length > 0 && (
+                        <ul className="text-slate-500 space-y-0.5 list-none">
+                          {item.subDescriptions.map((sub, idx) => (
+                            <li key={idx} className="pl-0 before:content-['-'] before:mr-1 before:text-slate-300">
+                              {sub}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </td>
+                    <td className="py-1.5 px-2 text-right font-medium text-slate-600 align-top whitespace-nowrap">
+                      {hasPrice ? formatCurrency(item.unitPrice) : ''}
+                    </td>
+                    <td className="py-1.5 px-2 text-right text-slate-600 align-top">
+                      {hasPrice ? item.quantity : ''}
+                    </td>
+                    <td className="py-1.5 px-2 text-right font-medium text-slate-700 align-top whitespace-nowrap">
+                      {taxableTotal > 0 ? formatCurrency(taxableTotal) : ''}
+                    </td>
+                    <td className="py-1.5 px-2 text-center text-slate-500 align-top whitespace-nowrap">
+                      {hasPrice ? `${vatRate}%` : ''}
+                    </td>
+                    <td className="py-1.5 px-2 text-right font-medium text-slate-600 align-top whitespace-nowrap">
+                      {vatAmount > 0 ? formatCurrency(vatAmount) : ''}
+                    </td>
+                    <td className="py-1.5 px-3 text-right font-bold text-slate-900 align-top whitespace-nowrap">
+                      {totalAmount > 0 ? formatCurrency(totalAmount) : ''}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
+            <tfoot>
+              <tr className="bg-slate-100/90 font-bold border-t-2 border-slate-300 text-slate-900">
+                <td className="py-2 px-3 text-left font-bold text-[10px] text-slate-900">
+                  Total Cost
+                </td>
+                <td className="py-2 px-2 text-right"></td>
+                <td className="py-2 px-2 text-right"></td>
+                <td className="py-2 px-2 text-right whitespace-nowrap text-[10px] font-bold text-slate-900">
+                  {serviceDetails.subtotal > 0 ? formatAlwaysCurrency(serviceDetails.subtotal) : ''}
+                </td>
+                <td className="py-2 px-2 text-center whitespace-nowrap text-[10px] font-bold text-slate-700">
+                  {serviceDetails.subtotal > 0 ? `${serviceDetails.vatPercentage || 5}%` : ''}
+                </td>
+                <td className="py-2 px-2 text-right whitespace-nowrap text-[10px] font-bold text-slate-900">
+                  {serviceDetails.vatAmount > 0 ? formatAlwaysCurrency(serviceDetails.vatAmount) : ''}
+                </td>
+                <td className="py-2 px-3 text-right whitespace-nowrap text-[10px] font-black text-slate-900">
+                  {serviceDetails.netTotal > 0 ? formatAlwaysCurrency(serviceDetails.netTotal) : ''}
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
@@ -294,31 +343,31 @@ export function PrintLayout({
             <div className="bg-slate-50 p-5 rounded-xl border border-slate-200/60 shadow-sm">
               <div className="space-y-2">
                 <div className="flex justify-between text-[10px] items-center">
-                  <span className="text-slate-500 font-medium">Subtotal</span>
-                  <span className="font-bold text-slate-700 text-sm">{formatCurrency(serviceDetails.subtotal)}</span>
+                  <span className="text-slate-500 font-medium">Subtotal (Taxable)</span>
+                  <span className="font-bold text-slate-700 text-sm">{formatAlwaysCurrency(serviceDetails.subtotal)}</span>
                 </div>
                 {serviceDetails.discount > 0 && (
                   <div className="flex justify-between text-[10px] items-center text-red-600">
                     <span className="font-medium">Discount</span>
-                    <span className="font-bold text-sm">-{formatCurrency(serviceDetails.discount)}</span>
+                    <span className="font-bold text-sm">-{formatAlwaysCurrency(serviceDetails.discount)}</span>
+                  </div>
+                )}
+                {serviceDetails.discount > 0 && (
+                  <div className="flex justify-between text-[10px] items-center">
+                    <span className="text-slate-500 font-medium">Subtotal After Discount</span>
+                    <span className="font-bold text-slate-700 text-sm">
+                      {formatAlwaysCurrency(Math.max(0, serviceDetails.subtotal - serviceDetails.discount))}
+                    </span>
                   </div>
                 )}
                 <div className="flex justify-between text-[10px] items-center">
-                  <span className="text-slate-500 font-medium">Subtotal After Discount</span>
-                  <span className="font-bold text-slate-700 text-sm">
-                    {formatCurrency(Math.max(0, serviceDetails.subtotal - serviceDetails.discount))}
-                  </span>
+                  <span className="text-slate-500 font-medium">Total VAT</span>
+                  <span className="font-bold text-slate-700 text-sm">{formatAlwaysCurrency(serviceDetails.vatAmount)}</span>
                 </div>
-                {serviceDetails.vatAmount > 0 && (
-                  <div className="flex justify-between text-[10px] items-center">
-                    <span className="text-slate-500 font-medium">VAT ({serviceDetails.vatPercentage}%)</span>
-                    <span className="font-bold text-slate-700 text-sm">{formatCurrency(serviceDetails.vatAmount)}</span>
-                  </div>
-                )}
                 <div className="my-2 border-t-2 border-slate-200 border-dashed"></div>
                 <div className="flex justify-between items-end">
                   <span className="text-[10px] font-bold text-slate-900 uppercase tracking-tight mb-1">Total Payable</span>
-                  <span className="text-xl font-black text-slate-900 leading-none">{formatCurrency(serviceDetails.netTotal)}</span>
+                  <span className="text-xl font-black text-slate-900 leading-none">{formatAlwaysCurrency(serviceDetails.netTotal)}</span>
                 </div>
               </div>
             </div>
